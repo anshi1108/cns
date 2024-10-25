@@ -1,0 +1,323 @@
+Playfair cipher:
+
+key = 'CLONE'
+text = input("Enter the plaintext: ")
+text = text.upper().replace('J', 'I')
+
+matrix = [['C','L','O','N','E'],
+          ['A','B','D','F','G'],
+          ['H','I','K','M','P'],
+          ['Q','R','S','T','U'],
+          ['V','W','X','Y','Z']]
+
+def find_position(char):
+    for r, row in enumerate(matrix):
+        if char in row:
+            return r, row.index(char)
+
+def is_same_row(a, b):
+    r1, c1 = find_position(a)
+    r2, c2 = find_position(b)
+    return r1 == r2
+
+def is_same_column(a, b):
+    r1, c1 = find_position(a)
+    r2, c2 = find_position(b)
+    return c1 == c2
+
+def encrypt_pair(a, b):
+    r1, c1 = find_position(a)
+    r2, c2 = find_position(b)
+    if is_same_row(a, b):
+        return matrix[r1][(c1 + 1) % 5] + matrix[r2][(c2 + 1) % 5]
+    elif is_same_column(a, b):
+        return matrix[(r1 + 1) % 5][c1] + matrix[(r2 + 1) % 5][c2]
+    else:
+        return matrix[r1][c2] + matrix[r2][c1]
+
+def decrypt_pair(a, b):
+    r1, c1 = find_position(a)
+    r2, c2 = find_position(b)
+    
+    if is_same_row(a, b):
+        return matrix[r1][(c1 - 1) % 5] + matrix[r2][(c2 - 1) % 5]
+    elif is_same_column(a, b):
+        return matrix[(r1 - 1) % 5][c1] + matrix[(r2 - 1) % 5][c2]
+    else:
+        return matrix[r1][c2] + matrix[r2][c1]
+text_list = list(text)
+if len(text_list) % 2 != 0:
+    text_list.append('X') 
+
+
+crypt = ""
+for i in range(0, len(text_list), 2):
+    try:
+        crypt += encrypt_pair(text_list[i], text_list[i + 1])
+    except ValueError as e:
+        print(e)
+        break
+print(f'Encrypted Text: {crypt}')
+
+
+def decrypt_text(ciphertext):
+    text_list = list(ciphertext)
+    decrypted_text = ""
+    
+    for i in range(0, len(text_list), 2):
+        try:
+            decrypted_text += decrypt_pair(text_list[i], text_list[i + 1])
+        except ValueError as e:
+            print(e)
+            break
+            
+    return decrypted_text
+
+decrypted_text = decrypt_text(crypt)
+print(f'Decrypted Text: {decrypted_text}')
+Vigenere cipher:
+
+# Vigenere cipher
+def l_to_n(letters, arr):
+    for letter in letters:
+        if 'a' <= letter <= 'z':
+            arr.append(ord(letter) - 97)
+        else:
+            continue
+
+plaintext = input("Enter plaintext: ").lower()
+key = input("Enter key: ").lower()
+arr1 = []
+arr2 = []
+l_to_n(plaintext, arr1)
+l_to_n(key, arr2)
+while len(arr2) < len(arr1):
+    arr2.extend(arr2[:len(arr1) - len(arr2)])
+
+#encypt
+arr3=[]
+for i in range (len(arr1)):
+    arr3.append(arr1[i]+arr2[i])
+    if arr3[i]>25:
+        arr3[i]-=26
+print("\nEncrypted message: ")
+for i in range (len(arr3)):
+    print(chr(arr3[i]+97),end='')
+
+#decrypt
+arr4=[]
+for i in range (len(arr1)):
+    arr4.append(arr3[i]-arr2[i])
+    if arr4[i]<0:
+        arr4[i]+=26
+print("\n\nDecrypted message: ")
+for i in range (len(arr3)):
+    print(chr(arr4[i]+97),end='')
+print("\n")
+
+
+
+Caesar Cipher, Transposition cipher:
+
+import math
+#input
+text = input("\nEnter a string (length is a square number): ").lower()
+#variables
+n= int(math.sqrt(len(text)))
+l1 = list(text)
+l2 = []
+l3=[]
+l4=[]
+l5=[]
+#making list with letters shifted to n
+for letter in l1:
+if 'a' <= letter <= 'z':
+shifted_char = chr(((ord(letter) - ord('a') + 3) % 26) + ord('a'))
+l2.append(shifted_char)
+print ("Ceaser encypt: ", l2)
+#making transverse
+for i in range (n):
+for j in range (n):
+l3.append(l2[i+j*n])
+#matrix
+print("\nMatrix: ")
+for i in range (n):
+if i>0:
+print("")
+for j in range (n):
+print(l3[i+j*n],end=" ")
+#printing encrypted message
+encrypt = "".join(str(element) for element in l3)
+print("\n\nEncrypted: ",encrypt)
+#taking transpose
+for i in range (n):
+for j in range (n):
+l4.append(l3[i+j*n])
+
+#matrix
+print('\nMatrix: ')
+for i in range (n):
+if i>0:
+print("")
+for j in range (n):
+print(l4[i+j*n],end=" ")
+#making a list with shifted letters
+for letter in l4:
+shifted_char = chr(((ord(letter) - ord('a') - 3) % 26) + ord('a'))
+l5.append(shifted_char)
+#printing decrypted message
+decrypt = "".join(str(element) for element in l5)
+print("\n\nDecrypted: ",decrypt,"\n")
+
+DES:
+
+Step 1 : Generate Plaintext m, keyA and keyB by clicking on respective buttons PART I of the simulation page.
+
+Step 2 : Enter generated Plaintext m from PART I to PART II in "Your text to be encrypted/decrypted:" block.
+
+Step 3 : Enter generated keyA from PART I to PART II "Key to be used:" block and click on DES encrypt button to output ciphertext c1.This is First Encryption.
+
+Step 4 : Enter generated ciphertext c1 from PART II "Output:" Block to PART II in "Your text to be encrypted/decrypted:" block.
+
+Step 5 : Enter generated keyB from PART I to PART II in "Key to be used:" block and click on DES decrypt button to output ciphertext c2.This is Second Encryption.
+
+Step 6 : Enter generated ciphertext c2** from PART II "Output:" block to PART II in "Your text to be encrypted/decrypted:" block.
+
+Step 7 : Enter generated keyA from PART I to PART II "Key to be used:" block and click on DES encrypt button to output ciphertext c3.This is Third Encryption. Aes Encryption is done thrice.This Scheme is called triple DES.
+
+Step 8 : Enter generated ciphertext c3 from PART II "Output:" Block to PART III "Enter your answer here:" block inorder to verify your Triple DES.
+RSA:
+
+import random
+from sympy import isprime
+from math import gcd
+from time import time
+
+def mod_inverse(e, phi):
+    for d in range(1, phi):
+        if (e * d) % phi == 1:
+            return d
+    return None
+
+def generate_prime_candidate(length):
+    p = random.getrandbits(length)
+    p |= (1 << (length - 1)) | 1  # Ensure p is odd and has the correct bit length
+    while not isprime(p):
+        p = random.getrandbits(length)
+        p |= (1 << (length - 1)) | 1
+    return p
+
+def generate_keys(bit_length=8):
+    p = generate_prime_candidate(bit_length)
+    q = generate_prime_candidate(bit_length)
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    e = random.randrange(2, phi)
+    while gcd(e, phi) != 1:
+        e = random.randrange(2, phi)
+
+    d = mod_inverse(e, phi)
+    return ((e, n), (d, n))
+
+def encrypt(public_key, plaintext):
+    e, n = public_key
+    cipher = [(ord(char) ** e) % n for char in plaintext]
+    return cipher
+
+def decrypt(private_key, ciphertext):
+    d, n = private_key
+    plain = [chr((char ** d) % n) for char in ciphertext]
+    return ''.join(plain)
+
+if __name__ == '__main__':
+    bit_length = 8
+    public_key, private_key = generate_keys(bit_length)
+
+    print(f"Public Key: {public_key}")
+    print(f"Private Key: {private_key}")
+
+    message = "Anshi"
+    print(f"Original Message: {message}")
+
+    start_time = time()
+    encrypted_message = encrypt(public_key, message)
+    end_time = time()
+    print(f"Encrypted Message: {encrypted_message}")
+
+    start_time = time()
+    decrypted_message = decrypt(private_key, encrypted_message)
+    end_time = time()
+    print(f"Decrypted Message: {decrypted_message}")
+
+
+HMAC:
+
+import hashlib
+import hmac
+import os
+
+def generate_salt(length=16):
+    # Generate a random salt for added security
+    return os.urandom(length)
+
+def hash_password(password, salt):
+    # Hash the password using SHA-256 and the provided salt
+    password_hash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    return password_hash
+
+def create_hmac(key, message):
+    # Create an HMAC using SHA-256
+    h = hmac.new(key, message.encode('utf-8'), hashlib.sha256)
+    return h.digest()
+
+def main():
+    # Example usage of cryptographic hash function
+    password = "anshi12345"
+    salt = generate_salt()
+    hashed_password = hash_password(password, salt)
+
+    print("Password:", password)
+    print("Salt:", salt.hex())  # Convert salt to hex for better readability
+    print("Hashed Password:", hashed_password.hex())
+
+    # Example usage of HMAC
+    secret_key = b'secret_key'
+    message = "Hi this is Anshi!"
+    hmac_result = create_hmac(secret_key, message)
+    print("HMAC:", hmac_result.hex())
+
+if __name__ == "__main__":
+    main()
+
+
+Wireshark
+
+
+Promiscuous mode:
+tcp.port == 80
+ip.src==192.168.41.231
+frame contains "for"
+
+NMAP
+Type your own ip address in Target as shown above
+Type command nmap -p 1-200 <ip_address> to see ports that are open
+Ex. nmap -p 1-200 <ip>
+
+nmap -p 80 <ip>
+
+nmap -F <ip>
+
+nmap -p - <ip>
+
+nmap -sT <ip>
+
+nmap -sU <ip>
+
+For OS fingerprinting
+nmap -O <ip>
+
+For subnet scan
+nmap  <ip>/24
+
+
